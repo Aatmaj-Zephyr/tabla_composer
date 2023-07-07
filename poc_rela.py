@@ -143,8 +143,8 @@ def play(input):
     output=[] #output array of variables
    
     input = [ x for x in input if x.isdigit() or x=="|" ] #remove all other symbols
-    Dhaline= [Dha,Tira,KiTa,Dha,Dhin,Na,Dha,Dha,Dhin,Na,Dha,Ti,Dha,Dha,Tun,Na,Dha,Ti,s,Dha,Tira,KiTa,Dha,Dha,Tira,KiTa,Dha,Ga,Tun,Na,Ke,Na]
-    Naline= [Na,Tira,KiTa,Na,Tun,Na,Na,Na,Tun,Na,Na,Ti,Na,Na,Tun,Na,Dha,Ti,s,Dha,Tira,KiTa,Dha,Dha,Tira,KiTa,Dha,Ga,Tun,Na,Ke,Na]
+    Dhaline= [Dha,Tira,KiTa,Dha,Dhin,Na,Dha,Dha,Dhin,Na,Dha,Ti,Dha,Dha,Tun,Na,Dha,Ti,s,Dha,Tira,KiTa,Dha,Dha,Tira,KiTa,Dha,Ti,Dha,Dha,Tun,Na]
+    Naline= [Na,Tira,KiTa,Na,Tun,Na,Na,Na,Tun,Na,Na,Ti,Na,Na,Tun,Na,Dha,Ti,s,Dha,Tira,KiTa,Dha,Dha,Tira,KiTa,Dha,Ti,Dha,Dha,Tun,Na]
     output.append(np.concatenate(Dhaline))
     output.append(np.concatenate(Naline))
     output.append(np.concatenate(Dhaline))
@@ -174,26 +174,39 @@ def play(input):
 
    
 
-    teen_taal= [Dha,Dhin,Dhin,Dha,Dha,Dhin,Dhin,Dha,Dha,Tun,Tun,Na,Na,Dhin,Dhin,Dha]
-
-    teen_taal=np.concatenate(teen_taal)
-    output=[teen_taal,teen_taal]+output+[teen_taal]
-    
+    #teen_taal= [Dha,Dhin,Dhin,Dha,Dha,Dhin,Dhin,Dha,Dha,Tun,Tun,Na,Na,Dhin,Dhin,Dha]
+    # teen_taal=np.concatenate(teen_taal)
+    teen_taal,sr=librosa.load("teen_taal.wav")
+    endDha,sr=librosa.load("Bols/Dha.wav",duration=2*speed)
+   # end= [Dha,Tira,KiTa,Dha,Dhin,Na,Dha,Dha,Dhin,Na,Dha,Ti,Dha,Dha,Tun,Na]
+    #tihai=[Dha,Ti,s,Dha,Tira,KiTa,Dha,Dha,Tira,KiTa,Dha,Ti,Dha,Dha,Tun,Na,endDha]
+    #end=end+tihai+tihai+tihai
+    #end=end+end+end
+    #
+    end=[Dha,Dha,Tira,KiTa,Dha,Tira,KiTa,Dha,Ti,endDha]
+    end=end+end+end
+    end=np.concatenate(end)  # output=[end]
+    output=[teen_taal,teen_taal]+output+[end]
+  
     z = np.concatenate(output) # concentate variables to make array
     
     
     sf.write('Rela.wav', z, sr) #make sound file
  
+
+
     
+
 
 playble_output=""
 
 f = open("Rela.md","w")
-for i in range(0,100):
+for i in range(0,7):
     f.write(" <hr> <br> ")
     raw_composed=compose(Matrix,code_dha,code_ta,matra_req,Max_matra,numbers,allowed_end)
     playble_output+=raw_composed
     f.write(convert_unicode(raw_composed))
+
     
 teentaal=[]
 #play('012345678') #test case
