@@ -1,9 +1,9 @@
-Matrix=[[0.4,0.5,0.8,0.2,0,0.5],
+Matrix=[[0.4,0.5,0.7,0.5,0,0.5],
 [0.4,0,0.7,0.6,0,0],
 [0.8,0,0,0,0,0],
-[0.4,0,0,0,0.8,0.3],
+[0.6,0,0,0,0.8,0.4],
 [0,0,0,0,0,0],
-[1,1,1,0,0,0]]
+[1,1,1,0.3,0,0]]
 Bols=["dha","ge","ti ta","tin na","ke na","s"]
 
 Unicode=["&#2343;&#2366;","&#2340;&#2367;","&#2335;","&#2327;&#2375;","&#2340;&#2367;&#2306;","&#2344;&#2366;","&#2325;&#2375;","&#2343;&#2367;&#2306;","&#2365;"]
@@ -109,7 +109,7 @@ def play(input):
     input = teen_taal + teen_taal +input + teen_taal 
     '''
    
-    speed = 0.125
+    speed = 0.15
 
     Dha, sr = librosa.load("Bols/Dha.wav",duration=speed)
 
@@ -119,9 +119,11 @@ def play(input):
 
     Ta, sr = librosa.load("Bols/Ti.wav",duration=speed)
     
-    Ti=np.concatenate((librosa.load("Bols/Ti.wav",duration=0.5*speed)[0],librosa.load("Bols/Ta.wav",duration=0.5*speed)[0]))
-    Ta=np.concatenate((librosa.load("Bols/Ke.wav",duration=0.5*speed)[0],librosa.load("Bols/Ta.wav",duration=0.5*speed)[0]))
+    #Ti=np.concatenate((librosa.load("Bols/Ti.wav",duration=0.5*speed)[0],librosa.load("Bols/Ta.wav",duration=0.5*speed)[0]))
+    #Ta=np.concatenate((librosa.load("Bols/Ke.wav",duration=0.5*speed)[0],librosa.load("Bols/Ta.wav",duration=0.5*speed)[0]))
 
+    Tira=np.concatenate((librosa.load("Bols/Ti.wav",duration=0.5*speed)[0],librosa.load("Bols/Ta.wav",duration=0.5*speed)[0]))
+    KiTa=np.concatenate((librosa.load("Bols/Ke.wav",duration=0.5*speed)[0],librosa.load("Bols/Ta.wav",duration=0.5*speed)[0]))
 
     Ga, sr = librosa.load("Bols/Ga.wav",duration=speed)
 
@@ -135,13 +137,29 @@ def play(input):
 
     s , sr = librosa.load("Bols/s.wav",duration=speed)
 
-    index=["Dha","Ti","Ta","Ga","Tun","Na","Ke","Dhin","s"] # for reference
-    var_index=[Dha,Ti,Ta,Ga,Tun,Na,Ke,Dhin,s] # index of variables
+    index=["Dha","Tira","KiTa","Ga","Tun","Na","Ke","Dhin","s"] # for reference
+    var_index=[Dha,Tira,KiTa,Ga,Tun,Na,Ke,Dhin,s] # index of variables
 
     output=[] #output array of variables
-    input = [ x for x in input if x.isdigit() ] #remove all other symbols
+   
+    input = [ x for x in input if x.isdigit() or x=="|" ] #remove all other symbols
+    Dhaline= [Dha,Tira,KiTa,Dha,Dhin,Na,Dha,Dha,Dhin,Na,Dha,Ti,Dha,Dha,Tun,Na,Dha,Ti,s,Dha,Tira,KiTa,Dha,Dha,Tira,KiTa,Dha,Ga,Tun,Na,Ke,Na]
+    Naline= [Na,Tira,KiTa,Na,Tun,Na,Na,Na,Tun,Na,Na,Ti,Na,Na,Tun,Na,Dha,Ti,s,Dha,Tira,KiTa,Dha,Dha,Tira,KiTa,Dha,Ga,Tun,Na,Ke,Na]
+    output.append(np.concatenate(Dhaline))
+    output.append(np.concatenate(Naline))
+    output.append(np.concatenate(Dhaline))
+    output.append(np.concatenate(Naline))
+    flip =0
     for i in range(len(input)):
-        if(i==0 and input[i] == '8'):
+        if(input[i]=='|'):
+            if(flip==0):
+             output.append(np.concatenate(Dhaline))
+             flip=1
+            else:
+              output.append(np.concatenate(Naline))
+              flip=0
+            
+        elif(i==0 and input[i] == '8'):
             pass
             #if starts with pause not tested yet
         elif(i<len(input)-1):
@@ -156,9 +174,10 @@ def play(input):
 
    
 
+    teen_taal= [Dha,Dhin,Dhin,Dha,Dha,Dhin,Dhin,Dha,Dha,Tun,Tun,Na,Na,Dhin,Dhin,Dha]
 
-    teentaal, sr = librosa.load("teen_taal_drut.wav")
-    output=[teentaal,teentaal]+output+[teentaal]
+    teen_taal=np.concatenate(teen_taal)
+    output=[teen_taal,teen_taal]+output+[teen_taal]
     
     z = np.concatenate(output) # concentate variables to make array
     
@@ -169,7 +188,7 @@ def play(input):
 
 playble_output=""
 
-f = open("Kaida.md","w")
+f = open("Rela.md","w")
 for i in range(0,100):
     f.write(" <hr> <br> ")
     raw_composed=compose(Matrix,code_dha,code_ta,matra_req,Max_matra,numbers,allowed_end)
