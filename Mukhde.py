@@ -1,8 +1,8 @@
 Matrix=[[0.4,0.5,0.7,0.5,0,0.5,0.5],
-[0.4,0,0.7,0.6,0,0,0],
-[0.8,0,0,0,0,0,0],
-[0.6,0,0,0,0.8,0.4,0],
-[0,0,0,0,0,0,0],
+[0.3,0,0.7,0.4,0,0,0],
+[0.8,0,0.4,0,0,0,0.4],
+[0.6,0,1,0,0.8,0.4,0],
+[0,0,1,0,0,0,0],
 [1,1,1,0.3,0,0,0.5],
 [1,1,0,0,0,0,0.5]]
 Bols=["dha","ge","ti ta","tin na","ke na","s","ta ka ta tira kita"]
@@ -13,7 +13,7 @@ code_dha=['0','3','1 2','4 5','6 5','8','1 5 1 2'] #codes used everywhere eg dha
 teen_taal_bols = [] # corresponds to code_ta
 
 
-importance=[0.3,0.5,0.5,0.5,0.5,0.05,0.5] #importance of every bol
+importance=[0.3,0.5,0.7,0.5,0.5,0.05,0.6] #importance of every bol
 for j in range(0,len(Matrix)):
     for i in range(0,len(importance)):
          Matrix[j][i]=Matrix[j][i]*importance[i] #multiply importance on the matrix
@@ -79,7 +79,7 @@ def Mukhde(Matrix,code_dha,matra_req,Max_matra,numbers,allowed_end):
     tihai_start=Max_matra-tihai_matra*3 +1 if tihai_matra>0 else Max_matra
   #  print(tihai_start)
   #  print(tihai_matra)
-    teen_taal_bols = [0,7,7,0,0,7,7,0,0,5,5,6,6,7,7,0]
+    teen_taal_bols = [0,7,7,0,0,7,7,0,0,4,4,5,5,7,7,0]
     
 
 
@@ -90,7 +90,7 @@ def Mukhde(Matrix,code_dha,matra_req,Max_matra,numbers,allowed_end):
    
     #print(temp) must be 32
   
-    tihai = compose_pure(Matrix,matra_req,tihai_matra,numbers,allowed_start,[0,0.2,0,0,0,0.8,0]) # begins with pause, ends with dha
+    tihai = compose_pure(Matrix,matra_req,tihai_matra,numbers,allowed_start,[0,0,0,0,0,0.8,0]) # begins with pause, ends with dha
     tihai=tihai+tihai+tihai[:-1] #remove last element dha
     for i in tihai:
         answer_ta+=code_dha[i]+" "
